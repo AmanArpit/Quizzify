@@ -1,0 +1,154 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzify</title>
+    <link rel="stylesheet" href="quiz.css">
+   
+
+</head>
+<body>
+
+    <h1>Welcome, <span id="name"></span>!</h1>
+    <div id="timer">Time Left: <span id="time-left">45s</span></div>
+    <div id="question"></div>
+
+    <div id="options">
+      <div class="option">Option 1</div>
+      <div class="option">Option 2</div>
+      <div class="option">Option 3</div>
+      <div class="option">Option 4</div>
+    </div>
+    <button id="next-button">Next</button>
+    <canvas id="confetti"></canvas>
+    
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+ 
+    <script>
+        const name = localStorage.getItem('userName');
+        document.getElementById('name').textContent = name;
+
+        const questions = [
+            {
+                question: "What is the name of Earth's natural satellite?",
+                options: ["Moon", "Water", "Titan", "All of the above"],
+                answer: "Moon"
+            },
+            {
+                question: "What is the capital city of Bihar?",
+                options: ["Paris", "London", "Patna", "Gaya"],
+                answer: "Patna"
+            },
+            {
+                question: "Who is the PM of India?",
+                options: ["Vincent van Gogh", "Salman", "Modi", "Michelangelo"],
+                answer: "Modi"
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Mars", "Venus", "Mercury", "Jupiter"],
+                answer: "Mars"
+            },
+            {
+                question: "What is the formula of water ?",
+                options: ["H2O", "N2O", "HCL", "None of the above"],
+                answer: "H2O"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        const questionElement = document.getElementById('question');
+        const options = Array.from(document.querySelectorAll('.option'));
+        const nextButton = document.getElementById('next-button');
+        const canvas = document.querySelector('#confetti');
+        const timerElement = document.getElementById('timer');
+        const timeLeftElement = document.getElementById('time-left');
+
+        let secondsLeft = 45;
+        let countdownInterval;
+
+        const jsConfetti = new JSConfetti();
+        function startTimer() {
+            countdownInterval = setInterval(() => {
+                secondsLeft--;
+                timeLeftElement.textContent = `${secondsLeft}s`;
+
+                if (secondsLeft === 0) {
+                    clearInterval(countdownInterval);
+                    questionElement.textContent = "Time's up!";
+                    options.forEach(option => {
+                        option.classList.add('disabled');
+                    });
+                    nextButton.disabled = true;
+                }
+            }, 1000);
+        }
+
+        function displayQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+
+            options.forEach((option, index) => {
+                option.textContent = currentQuestion.options[index];
+                option.classList.remove('correct', 'incorrect', 'clicked', 'disabled');
+                option.style.backgroundColor = '';
+            });
+        }
+
+        function checkAnswer(selectedOption) {
+            const currentQuestion = questions[currentQuestionIndex];
+            const correctOptionIndex = currentQuestion.options.findIndex(option => option === currentQuestion.answer);
+
+            options[correctOptionIndex].classList.add('correct');
+
+            if (selectedOption === currentQuestion.answer) {
+                options.forEach(option => {
+                    if (option.textContent === selectedOption) {
+                        option.classList.add('clicked');
+                        option.style.backgroundColor = 'green';
+                    } else {
+                        option.classList.add('disabled');
+                    }
+                });
+                jsConfetti.addConfetti();
+                
+            } else {
+                options.forEach(option => {
+                    if (option.textContent === selectedOption) {
+                        option.classList.add('incorrect');
+                        option.style.backgroundColor = 'red';
+                    } else {
+                        option.classList.add('disabled');
+                    }
+                });
+                
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            } else {
+                questionElement.textContent = "Quiz completed!";
+                nextButton.disabled = true;
+                clearInterval(countdownInterval);
+            }
+        }
+
+        displayQuestion();
+        startTimer();
+
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                if (!option.classList.contains('disabled')) {
+                    checkAnswer(option.textContent);
+                }
+            });
+        });
+
+        nextButton.addEventListener('click', nextQuestion);
+    </script>
+</body>
+</html>

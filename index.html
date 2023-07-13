@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzify</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/ionicons@5.4.0/dist/css/ionicons.min.css">
+
+</head>
+<body>
+    <section class="nav">
+        <nav>
+            <span>Q</span>uizzify 
+        </nav>
+        <div class="text">
+             <h1>Learn&dash;Test&dash;Grow</h1><br>
+             <img src="img/img.webp" alt="" class="img1">
+        </div>
+
+       <div class="box">
+    <label for="name">Name:  </label>
+    <input type="text" id="name" name="name" placeholder="Enter your name" required><br>
+
+    <label for="subject">Choose Subject:</label>
+    <select id="subject" name="subject">
+      <option value="subject1">Science</option>
+      <option value="subject2">GK</option>
+      <option value="subject3">Maths</option>
+    </select><br>
+    <button type="submit" class="btn-submit" id="submitbtn" onclick="saveName()">Submit</button>
+  </div>
+    </section>
+
+    <script>
+        const submitbtn = document.getElementById('submitbtn');
+      
+        submitbtn.addEventListener('click', function() {
+          const name = document.getElementById('name').value;
+      
+          if (name === '') {
+            alert('Please enter your name.');
+            return;
+          }
+      
+          saveName(); // Call the saveName function to store the name in local storage
+      
+          window.location.href = 'quiz.html';
+        });
+      
+        function saveName() {
+          const name = document.getElementById('name').value;
+          localStorage.setItem('userName', name);
+        }
+      </script>
+      
+    
+</body>
+</html>
