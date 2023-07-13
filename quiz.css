@@ -26,7 +26,7 @@ html {
 h1{
     color: wheat;
     text-align: center;
-    padding-top: 170px;
+    padding-top: 190px;
 }
 h1:after{
     display: block;
